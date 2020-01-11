@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="custom.css" />
+    <title>Search Page</title>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="nav_bar">
+        <ul></ul>
+      </div>
+      <div class="container_main">
+        <div class="logo"><img src="logo.png" alt="Search Engine Logo" /></div>
+        <form id="searchForm">
+          <div class="searchbox">
+            <input id="keyword" type="text" name="keyword" />
+          </div>
+          <div class="container_buttons_search">
+            <input
+              type="submit"
+              value="Search"
+              class="google_search button_search"
+            />
+          </div>
+        </form>
+        <div class="not-found" id="not-found" style="display: none;">Not Found</div>
+
+        <div id="results"></div>
+      </div>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>

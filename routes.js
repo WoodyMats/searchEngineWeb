@@ -1,8 +1,42 @@
 const express = require("express");
+const Document = require("./models/document")
 
 const router = express.Router();
 
 router.get("/status", (req, res) => res.send("OK"));
+
+router.post("/sendDocuments/:keepData", (req, res) => {
+  console.log(req.params.keepData)
+  if (req.params.keepData == true) {
+    Document.insertMany(req.body, function (err, docs) {
+      if (err) {
+        console.log(err)
+      } else {
+        res.status(200).send({
+          message: "Documents Inserted."
+        })
+      }
+    })
+  } else {
+    Document.deleteMany({}, function (error, callback) {
+      if (error) {
+        console.log("Error deleting documents")
+        res.status(400).send
+      } else {
+        Document.insertMany(req.body, function (err, docs) {
+          if (err) {
+            console.log(err)
+          } else {
+            res.status(200).send({
+              message: "Documents Inserted."
+            })
+          }
+        })
+      }
+    })
+  }
+
+})
 
 router.post("/search", (req, res, next) => {
   const results = [];

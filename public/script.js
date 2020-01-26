@@ -10,7 +10,7 @@ searchForm.addEventListener("submit", function(event) {
   };
 
   if (keyword !== "") {
-    fetch("http://localhost:3000/api/search", {
+    fetch("http://woodymats.digital:3001/api/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)

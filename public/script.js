@@ -33,9 +33,8 @@ searchForm.addEventListener("submit", function(event) {
           res.forEach(result => {
             results.innerHTML += `
                 <div class="result">
-                    <div class="title">${result.title}</div>
-                    <div><a target="_blank" href="${result.url}">${result.url}</a></div>
-                    <div>${result.content}</div>
+                    <div class="title">${result}</div>
+                  
                 </div>
             `;
           });

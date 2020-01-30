@@ -1,13 +1,24 @@
 const express = require("express");
+const javaExcecutor = require('child_process').exec;
 const Document = require("./models/document")
 
 const router = express.Router();
 
 router.get("/status", (req, res) => res.send("OK"));
 
+router.get("/getDocuments", (req, res) => {
+  Document.find({}, {"_id": false, "__v": false}).then( function(documents, error) {
+    if(error) {
+      res.status(400).send("Something went wrong!!")
+    } else {
+      res.send(documents)
+    }
+  })
+})
+
 router.post("/sendDocuments/:keepData", (req, res) => {
   console.log(req.params.keepData)
-  if (req.params.keepData == true) {
+  if (req.params.keepData == "true") {
     Document.insertMany(req.body, function (err, docs) {
       if (err) {
         console.log(err)
@@ -40,56 +51,63 @@ router.post("/sendDocuments/:keepData", (req, res) => {
 
 router.post("/search", (req, res, next) => {
   const results = [];
-  console.log(req.body);
-  const { query } = req.body;
+  const child = javaExcecutor(`java -jar ./QueryProcessorProject.jar "${req.body.query}"`, function(error, stdout, stderr) {
+    res.status(200).send(stdout.split(","))
+    console.log(stdout.split(","))
+    // console.log('Error -> ' + error)
+    // console.log|('StdError -> ' + stderr)
+  })
 
-  const pages = [
-    {
-      title: "Test",
-      content: "<html><body>Test</body></html>",
-      url: "https://www.google.gr"
-    },
-    {
-      title: "Giorgos",
-      content: "<html><body>Giorgos</body></html>",
-      url: "https://www.youtube.com"
-    },
-    {
-      title: "Giorgos",
-      content: "<html><body>Giorgos</body></html>",
-      url: "https://www.youtube.com"
-    },
-    {
-      title: "Giorgos",
-      content: "<html><body>teteadasdasd adasdas dsa dasdsa</body></html>",
-      url: "https://www.youtube.com"
-    },
-    {
-      title: "Giorgos",
-      content: "<html><body>dasdsadasd asdasdasdasd asdas</body></html>",
-      url: "https://www.youtube.com"
-    },
-    {
-      title: "Giannis",
-      content: "<html><body>Giannis</body></html>",
-      url: "https://www.wikipedia.com"
-    }
-  ];
+  // const { query } = req.body;
+  // // console.log(query)
 
-  pages.forEach(page => {
-    if (page.title.includes(query)) {
-      results.push(page);
-    }
-  });
+  // const pages = [
+  //   {
+  //     title: "Test",
+  //     content: "<html><body>Test</body></html>",
+  //     url: "https://www.google.gr"
+  //   },
+  //   {
+  //     title: "Giorgos",
+  //     content: "<html><body>Giorgos</body></html>",
+  //     url: "https://www.youtube.com"
+  //   },
+  //   {
+  //     title: "Giorgos",
+  //     content: "<html><body>Giorgos</body></html>",
+  //     url: "https://www.youtube.com"
+  //   },
+  //   {
+  //     title: "Giorgos",
+  //     content: "<html><body>teteadasdasd adasdas dsa dasdsa</body></html>",
+  //     url: "https://www.youtube.com"
+  //   },
+  //   {
+  //     title: "Giorgos",
+  //     content: "<html><body>dasdsadasd asdasdasdasd asdas</body></html>",
+  //     url: "https://www.youtube.com"
+  //   },
+  //   {
+  //     title: "Giannis",
+  //     content: "<html><body>Giannis</body></html>",
+  //     url: "https://www.wikipedia.com"
+  //   }
+  // ];
 
-  if (results.length > 0) {
-    return res.send(results);
-  } else {
-    return res.send({
-      status: 404,
-      message: "Not Found"
-    });
-  }
+  // pages.forEach(page => {
+  //   if (page.title.includes(query)) {
+  //     results.push(page);
+  //   }
+  // });
+
+  // if (results.length > 0) {
+  //   return res.send(results);
+  // } else {
+  //   return res.send({
+  //     status: 404,
+  //     message: "Not Found"
+  //   });
+  // }
 });
 
 module.exports = router;
